@@ -19,15 +19,42 @@ type expr =
   | Div of expr * expr
   | Mod of expr * expr
 
-let rec format e = 
-  match e with
-  | Num n -> Printf.sprintf"%d" n
-  | Add (a,b) -> Printf.sprintf"%s + %s" (format a) (format b)
-  | Sub (a,b) -> Printf.sprintf"%s - %s" (format a) (format b)
-  | Mul (a,b) -> Printf.sprintf"%s * %s" (format a) (format b)
-  | Div (a,b) -> Printf.sprintf"%s / %s" (format a) (format b)
-  | Mod (a,b) -> Printf.sprintf"%s ^ %s" (format a) (format b)
-
+  let rec format e =
+    let formatted = match e with
+      | Num n -> Printf.sprintf "%d" n
+      | Add (a, b) -> (
+          let formatted_a = format a in
+          let formatted_b = format b in
+          Printf.sprintf "%s + %s" formatted_a formatted_b
+        )
+      | Sub (a, b) -> (
+          let formatted_a = format a in
+          let formatted_b = format b in
+          Printf.sprintf "%s - %s" formatted_a formatted_b
+        )
+      | Mul (a, b) -> (
+          let formatted_a = format a in
+          let formatted_b = format b in
+          match b with
+          | Add _ | Sub _ | Div _ | Mod _-> Printf.sprintf "%s * (%s)" formatted_a formatted_b
+          | _ -> Printf.sprintf "%s * %s" formatted_a formatted_b
+        )
+      | Div (a, b) -> (
+          let formatted_a = format a in
+          let formatted_b = format b in
+          match b with
+          | Add _ | Sub _ | Mul _ | Mod _-> Printf.sprintf "%s / (%s)" formatted_a formatted_b
+          | _ -> Printf.sprintf "%s / %s" formatted_a formatted_b
+        )
+      | Mod (a, b) -> (
+          let formatted_a = format a in
+          let formatted_b = format b in
+          match b with
+          | Add _ | Sub _ | Mul _ | Div _-> Printf.sprintf "%s %s (%s)" formatted_a "mod" formatted_b
+          | _ -> Printf.sprintf "%s %s %s" formatted_a "mod" formatted_b
+        )          
+      in
+        formatted
 let rec eval e = 
   match e with
   | Num n -> n
