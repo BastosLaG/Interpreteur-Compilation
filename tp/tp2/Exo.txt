@@ -1,0 +1,243 @@
+Exo 0: 
+
+1. 
+
+SPIM is a MIPS R2000 simulator.
+Its top-level commands are:
+exit  -- Exit the simulator
+quit  -- Exit the simulator
+read "FILE" -- Read FILE of assembly code into memory
+load "FILE" -- Same as read
+run <ADDR> -- Start the program at optional ADDRESS
+step <N> -- Step the program for N instructions
+continue -- Continue program execution without stepping
+print $N -- Print register N
+print $fN -- Print floating point register N
+print ADDR -- Print contents of memory at ADDRESS
+print_symbols -- Print all global symbols
+print_all_regs -- Print all MIPS registers
+print_all_regs hex -- Print all MIPS registers in hex
+reinitialize -- Clear the memory and registers
+breakpoint <ADDR> -- Set a breakpoint at address
+delete <ADDR> -- Delete all breakpoints at address
+list -- List all breakpoints
+dump [ "FILE" ] -- Dump binary code to spim.dump or FILE in network byte order
+dumpnative [ "FILE" ] -- Dump binary code to spim.dump or FILE in host byte order
+. -- Rest of line is assembly instruction to put in memory
+<cr> -- Newline reexecutes previous command
+? -- Print this message
+Most commands can be abbreviated to their unique prefix
+e.g., ex(it), re(ad), l(oad), ru(n), s(tep), p(rint)
+
+2. 
+(spim) print_all_regs
+ PC      = 00000000   EPC     = 00000000   Cause   = 00000000   BadVAddr= 00000000
+ Status  = 3000ff10   HI      = 00000000   LO      = 00000000
+                                 General Registers
+R0  (r0) = 0          R8  (t0) = 0          R16 (s0) = 0          R24 (t8) = 0
+R1  (at) = 0          R9  (t1) = 0          R17 (s1) = 0          R25 (t9) = 0
+R2  (v0) = 0          R10 (t2) = 0          R18 (s2) = 0          R26 (k0) = 0
+R3  (v1) = 0          R11 (t3) = 0          R19 (s3) = 0          R27 (k1) = 0
+R4  (a0) = 0          R12 (t4) = 0          R20 (s4) = 0          R28 (gp) = 268468224
+R5  (a1) = 0          R13 (t5) = 0          R21 (s5) = 0          R29 (sp) = 2147480616
+R6  (a2) = 2147480624 R14 (t6) = 0          R22 (s6) = 0          R30 (s8) = 0
+R7  (a3) = 0          R15 (t7) = 0          R23 (s7) = 0          R31 (ra) = 0
+
+ FIR    = 00009800    FCSR    = 00000000    FCCR   = 00000000   FEXR    = 00000000
+ FENR   = 00000000
+                              Double Floating Point Registers
+FP0  = 0.00000       FP8  = 0.00000       FP16 = 0.00000       FP24 = 0.00000
+FP2  = 0.00000       FP10 = 0.00000       FP18 = 0.00000       FP26 = 0.00000
+FP4  = 0.00000       FP12 = 0.00000       FP20 = 0.00000       FP28 = 0.00000
+FP6  = 0.00000       FP14 = 0.00000       FP22 = 0.00000       FP30 = 0.00000
+                              Single Floating Point Registers
+FP0  = 0.00000       FP8  = 0.00000       FP16 = 0.00000       FP24 = 0.00000
+FP1  = 0.00000       FP9  = 0.00000       FP17 = 0.00000       FP25 = 0.00000
+FP2  = 0.00000       FP10 = 0.00000       FP18 = 0.00000       FP26 = 0.00000
+FP3  = 0.00000       FP11 = 0.00000       FP19 = 0.00000       FP27 = 0.00000
+FP4  = 0.00000       FP12 = 0.00000       FP20 = 0.00000       FP28 = 0.00000
+FP5  = 0.00000       FP13 = 0.00000       FP21 = 0.00000       FP29 = 0.00000
+FP6  = 0.00000       FP14 = 0.00000       FP22 = 0.00000       FP30 = 0.00000
+FP7  = 0.00000       FP15 = 0.00000       FP23 = 0.00000       FP31 = 0.00000
+
+3. 
+(spim) run
+The following symbols are undefined:
+ADDR
+main
+
+Instruction references undefined symbol at 0x00400014
+[0x00400014]    0x0c000000  jal 0x00000000 [main]           ; 188: jal main
+
+// cela ne fonctionne pas il n'y a pas d'addresse et de main 
+
+4. (spim) load "main.s"
+
+5. (spim) run
+
+6. il ne c'est rien passé mais il n'y a plus d'erreur
+
+7. 
+    a.  load "basic.s"
+        spim: (parser) Label is defined for the second time on line 4 of file basic.s
+          main:
+              ^
+        // Il y a un main dans basic.s se qui bloque spim
+
+    b.  (spim) reinitialize
+        Loaded: /usr/lib/spim/exceptions.s
+        SPIM Version 8.0 of January 8, 2010
+        Copyright 1990-2010, James R. Larus.
+        All Rights Reserved.
+        See the file README for a full copyright notice.
+        (spim) load "basic.s"
+
+8. 
+(spim) breakpoint main
+(spim) run
+Breakpoint encountered at 0x00400024 
+
+9.
+(spim) step 1
+[0x00400024]    0x00000000  nop                             ; 5: nop
+
+(spim) print_all_regs
+ PC      = 00400004   EPC     = 00000000   Cause   = 00000000   BadVAddr= 00000000
+ Status  = 3000ff10   HI      = 00000000   LO      = 00000000
+                                 General Registers
+R0  (r0) = 0          R8  (t0) = 42         R16 (s0) = 0          R24 (t8) = 0
+R1  (at) = 0          R9  (t1) = 9          R17 (s1) = 0          R25 (t9) = 0
+R2  (v0) = 10         R10 (t2) = 51         R18 (s2) = 0          R26 (k0) = 0
+R3  (v1) = 0          R11 (t3) = 0          R19 (s3) = 0          R27 (k1) = 0
+R4  (a0) = 0          R12 (t4) = 0          R20 (s4) = 0          R28 (gp) = 268468224
+R5  (a1) = 2147480620 R13 (t5) = 0          R21 (s5) = 0          R29 (sp) = 2147480616
+R6  (a2) = 2147480624 R14 (t6) = 0          R22 (s6) = 0          R30 (s8) = 0
+R7  (a3) = 0          R15 (t7) = 0          R23 (s7) = 0          R31 (ra) = 4194328
+
+ FIR    = 00009800    FCSR    = 00000000    FCCR   = 00000000   FEXR    = 00000000
+ FENR   = 00000000
+                              Double Floating Point Registers
+FP0  = 0.00000       FP8  = 0.00000       FP16 = 0.00000       FP24 = 0.00000
+FP2  = 0.00000       FP10 = 0.00000       FP18 = 0.00000       FP26 = 0.00000
+FP4  = 0.00000       FP12 = 0.00000       FP20 = 0.00000       FP28 = 0.00000
+FP6  = 0.00000       FP14 = 0.00000       FP22 = 0.00000       FP30 = 0.00000
+                              Single Floating Point Registers
+FP0  = 0.00000       FP8  = 0.00000       FP16 = 0.00000       FP24 = 0.00000
+FP1  = 0.00000       FP9  = 0.00000       FP17 = 0.00000       FP25 = 0.00000
+FP2  = 0.00000       FP10 = 0.00000       FP18 = 0.00000       FP26 = 0.00000
+FP3  = 0.00000       FP11 = 0.00000       FP19 = 0.00000       FP27 = 0.00000
+FP4  = 0.00000       FP12 = 0.00000       FP20 = 0.00000       FP28 = 0.00000
+FP5  = 0.00000       FP13 = 0.00000       FP21 = 0.00000       FP29 = 0.00000
+FP6  = 0.00000       FP14 = 0.00000       FP22 = 0.00000       FP30 = 0.00000
+FP7  = 0.00000       FP15 = 0.00000       FP23 = 0.00000       FP31 = 0.00000
+
+nop                 // ne fait rien
+li $t0, 42          // charge 42 dans $R8 ou $t0
+li $t1, 9           // charge 9 dans $R9 ou $t1
+add $t2, $t0, $t1   // ajoute l'addition de $t1 et $t0 dans $t2 
+move $a0, $t2       // $a2 = $t2 
+li $v0, 1           // charge 1 dans $v0 -> $v0 = valeur de retour quand est a 1 renvoie print_int($a0)
+syscall             // execute $v0
+jr $ra              // jump register to return addresse / return 0; en C 
+
+
+Exo 1:
+
+1.
+(spim) load "hello.s"
+(spim) run
+Hello, world!
+
+2. 
+li $v0, 4           // valeur de retour = 4 / print_string
+la $a0, num1q       // load argument num1q
+syscall             // execute la valeur de retour
+
+li $v0, 5           // valeur de retour = 5 / read_int
+syscall             // execute la valeur de retour
+move $t0, $v0       // t0 = v0 
+
+li $v0, 4           // valeur de retour = 4 / print_string
+la $a0, num2q       // load argument num2q
+syscall             // execute la valeur de retour
+
+li $v0, 5           // valeur de retour = 5 / read_int
+syscall             // execute la valeur de retour
+move $t1, $v0       // t1 = v0 
+
+li $v0, 4           // valeur de retour = 4 / print_string
+la $a0, sum         // load argument sum
+syscall             // execute la valeur de retour
+
+add $a0, $t0, $t1   // additionne dans $a0 -> $t0 & $t1
+li $v0, 1           // valeur de retour = 1 / print_int
+syscall             // execute la valeur de retour
+
+li $v0, 4           // valeur de retour = 4 / print_string
+la $a0, nl          // load argument nl
+syscall             // execute la valeur de retour
+
+jr $ra              // jump register to return addresse / return 0; en C 
+
+3. je constate qu'il y a une sorte de boucle infini ou plus précisement le programme ne sait plus quoi faire une fois le calcul terminé.
+
+4. le programme ne doit pas comprendre pourquoi il y 2 ligne jr $ra dans le fichier
+
+5. Remplaçons la ligne 33 jr $ra par l'appel de $v0 = 10 / exit. Puis executons la. 
+  li $v0, 10
+  syscall
+
+6. Je n'en vois pas a moins que le fait de bind $v0 sur 10 soit mal gerer dans la suite du code et que l'on sorte du main sans passé par jr $ra
+
+7. Changer v0 a la sortie de notre fonction 
+
+8.  
+
+si $t2 != $0 end_loop
+$t2 = $t2 - 1
+add_user_num()
+loop()
+
+notre boucle s'arrete au bout de 3 tour de boucle car au début $t2 = 3 et a chaque tour de boucle $t2 = $t2 - 1
+
+Exo 2.
+
+.text
+.globl main
+
+main:
+	li $v0, 4
+  la $a0, num1q
+  syscall
+
+	li $v0, 5
+  syscall
+	move $t0, $v0
+
+	li $t1, 0
+	li $t2, 0
+loop:
+  beq $t2, $t0, end_loop
+	addi $t2, $t2, 1
+	add $t1, $t1, $t2
+	b loop
+end_loop:
+	li $v0, 4
+	la $a0, sum
+	syscall
+
+	move $a0, $t1
+	li $v0, 1
+	syscall
+
+	li $v0, 4
+	la $a0, nl
+	syscall
+	
+  li $v0, 10
+  syscall
+
+.data
+num1q: .asciiz "Please enter a number: "
+sum:   .asciiz "The sum of these numbers is: "
+nl:    .asciiz "\n"
