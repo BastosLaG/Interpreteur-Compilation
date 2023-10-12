@@ -1,0 +1,50 @@
+Exercice 1:
+	2. print_all_regs
+	3.Il y a une erreur :
+		The following symbols are undefined:
+main
+
+Instruction references undefined symbol at 0x00400014
+[0x00400014]    0x0c000000  jal 0x00000000 [main]           ; 188: jal main
+
+	5.Il ne se passe rien.
+	6.Il ne se passe toujours rien,ce qui est normal le code ne fait que revenir à une adresse 
+
+	7.Il y a une erreur, car il faut vider la mémoire chargé avec main.s car sinon il y a 2 fonctions main chargé en mémoire
+	9.
+	nop ne fais rien
+	li $t0, 42 permet de charger la valeur 42 dans le registre temporaire $t0
+	li $t1, 9 fait pareil mais avec la valeur 9 et le registre temporaire $t1
+	add $t2, $t0, t$1 fait l'addition des registres
+	t1 et stocke le résultat dans le registre $t2
+	move $a0, $t2 copie le résultat de l'addition contenu dans le registre t2 vers a0 
+	li $v0, 1 définie la valeur de retour $v0 à 1
+	syscall exécute la fonction systeme call dépendant de la valeur $v0, ici $v0 = 1, cela correspond à print_int
+	jr $ra  retourne à l'ancienne position en mémoire stocker dans $ra
+
+
+Exercice 1:
+	2.On récupère la valeur via v0 , elle est ensuite affecté a t0 pour la première valeur et t1 pour la seconderenvoyé par v0 
+	
+	3.La fonction ne s'arrête pas d'elle même après le retour de l'addition.
+	
+	4. la ligne 38   jr $ra  provoque un retour sur elle même en boucle, ce que provoque une boucle infini à cause de $ra
+	5. J'ai enlevé la ligne 38 "  jr $ra ", cela provoque une erreur, mais au moins 
+		le programme s'arrête de lui même et l'addition se fait sans soucis car elle ne dépend pas de la fonction main
+	6. Ma solution implique de forcer une erreur dans le code pour le stopper, le code rempli sont objectif principale (l'addition) mais ne s'arrête pas correctement
+	7.Il faudrait réussir a stopper la boucle infini que provoque jr $ra sans finir sur une erreur, sans doute faire quelque chose sur $ra
+	
+	8.
+	
+  		beq $t2, $0, end_loop si $t2 est égal 0 alors on saute au label end_loop
+  		addi $t2, $t2, -1  fait l'addition de $t2 par -1 (donc soustrait 1 a $t2)
+  		jal add_user_num  on saute à la fonction add_user_num
+  		b loop saute au début de la fonction loop et recommence un tour si les conditions sont respecté
+		Donc la boucle décrémente $t2 et recommence un tour jusqu'a que $t2 soit égal à 0
+
+	Exercie 1 v2:
+	Après avoir fini l'exercice 2 j'ai trouvé une nouvelle solution au problème des question 5 à 7
+	j'ai donc placé à la fin de la fonction main l'instruction 
+	li $v0, 10
+  	syscall
+	syscall à la valeur 10 renovie la fonction exit ce qui comme son nom l'indique quitte le programme sans erreur cette fois ci.
