@@ -32,6 +32,8 @@ let compile_cond expr lbl =
   match expr with
   | Equal (r1, r2) -> Bne (r1, r2, lbl)
   | NotEqual (r1, r2) -> Beq (r1, r2, lbl)
+  | BigOrEqualUsign (r1, r2) -> Bgeu(r1, r2, lbl)
+  | LessOrEqual (r1, r2) -> Ble(r1, r2, lbl)
 
 let loop cond body =
   let name = uniq "loop" in

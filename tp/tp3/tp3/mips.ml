@@ -9,6 +9,7 @@ type reg =
   | T1
   | T2
   | T3
+  | T4
 
 type label = string
 
@@ -24,11 +25,9 @@ type instr =
   | Sw    of reg * loc
   | Lw    of reg * loc
   | Sb    of reg * loc
-  | Sll   of reg * reg
   | Lb    of reg * loc
   | Move  of reg * reg
   | Addi  of reg * reg * int
-  | Andi  of reg * reg
   | Add   of reg * reg * reg
   | Syscall
   | B     of label
@@ -36,7 +35,12 @@ type instr =
   | Bne   of reg * reg * label
   | Jal   of label
   | Jr    of reg
-  | Xor   of reg * reg
+  | Bgeu  of reg * reg * label
+  | Ble   of reg * reg * label
+  | Andi  of reg * reg * int
+  | Sra   of reg * reg * int
+  | Sll   of reg * reg * int
+  | Xor   of reg * reg * reg
 
 type directive =
   | Asciiz of string
@@ -65,6 +69,7 @@ let fmt_reg = function
   | T1   -> "$t1"
   | T2   -> "$t2"
   | T3   -> "$t3"
+  | T4   -> "$t4"
 
 let fmt_loc = function
   | Lbl (l)    -> l
@@ -78,19 +83,22 @@ let fmt_instr = function
   | Sw (r, a)        -> ps "  sw %s, %s" (fmt_reg r) (fmt_loc a)
   | Lw (r, a)        -> ps "  lw %s, %s" (fmt_reg r) (fmt_loc a)
   | Sb (r, a)        -> ps "  sb %s, %s" (fmt_reg r) (fmt_loc a)
-  | Sll (rd, rs, i)  -> ps "  sll %s, %s, %d" (fmt_reg rd) (fmt_reg rs) i
   | Lb (r, a)        -> ps "  lb %s, %s" (fmt_reg r) (fmt_loc a)
   | Move (rd, rs)    -> ps "  move %s, %s" (fmt_reg rd) (fmt_reg rs)
   | Addi (rd, rs, i) -> ps "  addi %s, %s, %d" (fmt_reg rd) (fmt_reg rs) i
-  | Andi (rd, rs, i) -> ps "  andi %s, %s, %d" (fmt_reg rd) (fmt_dir rs) i
   | Add (rd, rs, rt) -> ps "  add %s, %s, %s" (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
   | Syscall          -> ps "  syscall"
   | B (l)            -> ps "  b %s" l
   | Beq (rs, rt, l)  -> ps "  beq %s, %s, %s" (fmt_reg rs) (fmt_reg rt) l
   | Bne (rs, rt, l)  -> ps "  bne %s, %s, %s" (fmt_reg rs) (fmt_reg rt) l
+  | Ble (rs, rt, l)  -> ps "  ble %s, %s, %s" (fmt_reg rs) (fmt_reg rt) l
+  | Bgeu (rs, rt, l) -> ps "  bgeu %s, %s, %s" (fmt_reg rs) (fmt_reg rt) l
   | Jal (l)          -> ps "  jal %s" l
   | Jr (r)           -> ps "  jr %s" (fmt_reg r)
-  | Xor (rd, rs, rt) -> ps "  xor %s, %s, %s" (fmt_reg rd) (fmt_reg rs) (fmt_reg rt) 
+  | Andi(rd, rs, i)  -> ps "  andi %s, %s, %d" (fmt_reg rd) (fmt_reg rs) i
+  | Sra(rd, rt, i)   -> ps " sra %s, %s, %d" (fmt_reg rd) (fmt_reg rt) i
+  | Sll(rd, rt, i)   -> ps " sll %s, %s, %d" (fmt_reg rd) (fmt_reg rt) i
+  | Xor(rd, rs, rt)  -> ps " xor %s, %s, %s" (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
 
 let fmt_dir = function
   | Asciiz (s) -> ps ".asciiz \"%s\"" s
