@@ -1,0 +1,17 @@
+### Starting build.
+# Target: sierpinsky.ml.depends, tags: { extension:ml, file:sierpinsky.ml, ocaml, ocamldep, quiet }
+/usr/bin/ocamldep.opt -modules sierpinsky.ml > sierpinsky.ml.depends # cached
+# Target: mips.ml.depends, tags: { extension:ml, file:mips.ml, ocaml, ocamldep, quiet }
+/usr/bin/ocamldep.opt -modules mips.ml > mips.ml.depends # cached
+# Target: mips_helper.ml.depends, tags: { extension:ml, file:mips_helper.ml, ocaml, ocamldep, quiet }
+/usr/bin/ocamldep.opt -modules mips_helper.ml > mips_helper.ml.depends # cached
+# Target: mips.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:mips.cmo, file:mips.ml, implem, ocaml, quiet }
+/usr/bin/ocamlc.opt -c -o mips.cmo mips.ml
++ /usr/bin/ocamlc.opt -c -o mips.cmo mips.ml
+File "mips.ml", line 81, characters 4-19:
+81 |   | Sll (rd, rs, i)  -> ps "  sll %s, %s, %d" (fmt_reg rd) (fmt_reg rs) i
+         ^^^^^^^^^^^^^^^
+Error: The constructor Sll expects 2 argument(s),
+       but is applied here to 3 argument(s)
+Command exited with code 2.
+# Compilation unsuccessful.
