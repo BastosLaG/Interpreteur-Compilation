@@ -1,0 +1,3 @@
+(executable
+  (name countdown)
+  (promote (until-clean)))
