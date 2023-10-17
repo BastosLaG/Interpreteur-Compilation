@@ -1,16 +1,2 @@
 ### Starting build.
-# Target: countdown.ml.depends, tags: { extension:ml, file:countdown.ml, ocaml, ocamldep, quiet }
-/usr/bin/ocamldep.opt -modules countdown.ml > countdown.ml.depends
-# Target: mips.ml.depends, tags: { extension:ml, file:mips.ml, ocaml, ocamldep, quiet }
-/usr/bin/ocamldep.opt -modules mips.ml > mips.ml.depends
-# Target: mips_helper.ml.depends, tags: { extension:ml, file:mips_helper.ml, ocaml, ocamldep, quiet }
-/usr/bin/ocamldep.opt -modules mips_helper.ml > mips_helper.ml.depends
-# Target: mips.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:mips.cmo, file:mips.ml, implem, ocaml, quiet }
-/usr/bin/ocamlc.opt -c -o mips.cmo mips.ml
-# Target: mips_helper.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:mips_helper.cmo, file:mips_helper.ml, implem, ocaml, quiet }
-/usr/bin/ocamlc.opt -c -o mips_helper.cmo mips_helper.ml
-# Target: countdown.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:countdown.cmo, file:countdown.ml, implem, ocaml, quiet }
-/usr/bin/ocamlc.opt -c -o countdown.cmo countdown.ml
-# Target: countdown.byte, tags: { byte, dont_link_with, extension:byte, file:countdown.byte, link, ocaml, program, quiet }
-/usr/bin/ocamlc.opt mips.cmo mips_helper.cmo countdown.cmo -o countdown.byte
-# Compilation successful.
+# Compilation unsuccessful.
