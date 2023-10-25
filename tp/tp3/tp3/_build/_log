@@ -1,0 +1,16 @@
+### Starting build.
+# Target: sierpinsky.ml.depends, tags: { extension:ml, file:sierpinsky.ml, ocaml, ocamldep, quiet }
+/usr/bin/ocamldep.opt -modules sierpinsky.ml > sierpinsky.ml.depends # cached
+# Target: mips.ml.depends, tags: { extension:ml, file:mips.ml, ocaml, ocamldep, quiet }
+/usr/bin/ocamldep.opt -modules mips.ml > mips.ml.depends
+# Target: mips_helper.ml.depends, tags: { extension:ml, file:mips_helper.ml, ocaml, ocamldep, quiet }
+/usr/bin/ocamldep.opt -modules mips_helper.ml > mips_helper.ml.depends # cached
+# Target: mips.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:mips.cmo, file:mips.ml, implem, ocaml, quiet }
+/usr/bin/ocamlc.opt -c -o mips.cmo mips.ml
+# Target: mips_helper.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:mips_helper.cmo, file:mips_helper.ml, implem, ocaml, quiet }
+/usr/bin/ocamlc.opt -c -o mips_helper.cmo mips_helper.ml
+# Target: sierpinsky.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:sierpinsky.cmo, file:sierpinsky.ml, implem, ocaml, quiet }
+/usr/bin/ocamlc.opt -c -o sierpinsky.cmo sierpinsky.ml
+# Target: sierpinsky.byte, tags: { byte, dont_link_with, extension:byte, file:sierpinsky.byte, link, ocaml, program, quiet }
+/usr/bin/ocamlc.opt mips.cmo mips_helper.cmo sierpinsky.cmo -o sierpinsky.byte
+# Compilation successful.

@@ -6,9 +6,7 @@
 main : 
     addi $sp, $sp, -4 
     sw $ra, 0($sp)
-
     li $t0, 1  #x=1
-
 while_0:
         bgtu $t0, 2147483648 , sortie_while_0
         move $t1, $t0           # n = x 
@@ -36,7 +34,7 @@ while_1:
            
 sortie_while_1:
     li $v0, 4
-    la $a0, nl
+    la $a0, nl                  #print nl
     syscall 
 
     sll $t2, $t0, 1

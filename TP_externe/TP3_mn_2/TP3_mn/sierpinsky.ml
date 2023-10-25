@@ -12,21 +12,20 @@ let () =
             @(loop (GTEUnsigned(T0,T1))
               (
                 [Move(T2,T0)]
-                (* @( print_str "test") *)
                 @(loop (LEZero(T2))
                 (
-                  [Andi(T3,T2,1)]
-                  @(branch (Equal(T3, Zero))
-                      ( print_str "espace")
-                      ( print_str "hashtag" )
+                    [Andi(T3,T2,1)]
+                  @ (branch (NotEqual(T3, Zero))
+                      ( print_str "hashtag")
+                      ( print_str "espace" )
                     )
-                @[Srl (T2, T2, 1)]
+                  @[Srl (T2, T2, 1)]
                 )
                 )
-              )
                 @ ( print_str "nl" )
                 @  [Sll (T4, T0, 1)]
                 @ [ Xor(T0, T0, T4)] 
+              )
             )
           )
       

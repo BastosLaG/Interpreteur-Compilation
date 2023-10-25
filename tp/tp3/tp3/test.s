@@ -9,11 +9,11 @@ loop003:
   bgeu $t0, $t1, loop003_end
   move $t2, $t0
 loop002:
-  blez $t2, loop002_end
+  ble $t2, $zero, loop002_end
   andi $t3, $t2, 1
   beq $t3, $zero, branch001_else
   li $v0, 4
-  la $a0, hashtag
+  la $a0, diez
   syscall
   b branch001_end
 branch001_else:
@@ -21,14 +21,14 @@ branch001_else:
   la $a0, espace
   syscall
 branch001_end:
-  srl $t2, $t2, 1
+ sra $t2, $t2, 1
   b loop002
 loop002_end:
   li $v0, 4
   la $a0, nl
   syscall
-  sll $t4, $t0, 1
-  xor $t0, $t0, $t4
+ sll $t4, $t0, 1
+ xor $t0, $t0, $t4
   b loop003
 loop003_end:
   lw $ra, 0($sp)
@@ -36,6 +36,7 @@ loop003_end:
   jr $ra
 
 .data
-hashtag: .asciiz "#"
+nl: .asciiz "
+"
+diez: .asciiz "#"
 espace: .asciiz " "
-nl: .asciiz "\n"
