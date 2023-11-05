@@ -1,0 +1,24 @@
+### Starting build.
+# Target: test.ml.depends, tags: { extension:ml, file:test.ml, ocaml, ocamldep, quiet, traverse }
+/usr/bin/ocamldep.opt -modules test.ml > test.ml.depends # cached
+# Target: ast.ml.depends, tags: { extension:ml, file:ast.ml, ocaml, ocamldep, quiet, traverse }
+/usr/bin/ocamldep.opt -modules ast.ml > ast.ml.depends # cached
+# Target: ast.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:ast.cmo, file:ast.ml, implem, ocaml, quiet, traverse }
+/usr/bin/ocamlc.opt -c -o ast.cmo ast.ml # cached
+# Target: interp.ml.depends, tags: { extension:ml, file:interp.ml, ocaml, ocamldep, quiet, traverse }
+/usr/bin/ocamldep.opt -modules interp.ml > interp.ml.depends # cached
+# Target: baselib.ml.depends, tags: { extension:ml, file:baselib.ml, ocaml, ocamldep, quiet, traverse }
+/usr/bin/ocamldep.opt -modules baselib.ml > baselib.ml.depends # cached
+# Target: baselib.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:baselib.cmo, file:baselib.ml, implem, ocaml, quiet, traverse }
+/usr/bin/ocamlc.opt -c -o baselib.cmo baselib.ml # cached
+# Target: interp.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:interp.cmo, file:interp.ml, implem, ocaml, quiet, traverse }
+/usr/bin/ocamlc.opt -c -o interp.cmo interp.ml # cached
+# Target: print.ml.depends, tags: { extension:ml, file:print.ml, ocaml, ocamldep, quiet, traverse }
+/usr/bin/ocamldep.opt -modules print.ml > print.ml.depends # cached
+# Target: print.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:print.cmo, file:print.ml, implem, ocaml, quiet, traverse }
+/usr/bin/ocamlc.opt -c -o print.cmo print.ml # cached
+# Target: test.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:test.cmo, file:test.ml, implem, ocaml, quiet, traverse }
+/usr/bin/ocamlc.opt -c -o test.cmo test.ml # cached
+# Target: test.byte, tags: { byte, dont_link_with, extension:byte, file:test.byte, link, ocaml, program, quiet, traverse }
+/usr/bin/ocamlc.opt ast.cmo baselib.cmo interp.cmo print.cmo test.cmo -o test.byte # cached
+# Compilation successful.

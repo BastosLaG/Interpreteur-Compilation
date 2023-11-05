@@ -1,21 +1,36 @@
 open Ast
 open Baselib
 
-let eval_value v = v
+type 'a res =
+  | Ret of value
+  | Env of 'a Env.t
+
+let eval_const = function
+  | Nil		-> Nil
+  | Bool b	-> Bool b
+  | Int n 	-> Int n
+  | Str s	-> Str s
 
 let eval_expr e env =
   match e with
-  | Value e -> eval_value e
-  | Var e -> Env.find e env
+  | Value v	-> eval_const v
+  | Var v	-> Env.find v env
 
-(* let eval_instr e env = 
-  match e with
-  | Return e  -> eval_expr e
-  | Expr e    -> eval_expr e
-  | Assign  of ident * expr
-  | Cond    of expr * block * block
-  | Loop    of expr * block
+let eval_instr i env =
+  match i with
+  | Return e 	-> Ret (eval_expr e env)
+  | Assign(v, e)-> Env (Env.add v (eval_expr e env) env)
 
-let eval_block b = function
+let rec eval_block b env =
   match b with
-  | *)
+  | []	-> Env env
+  | i :: r ->
+	match eval_instr i env with
+	| Ret v 	-> Ret v
+	| Env e 	-> eval_block r e 
+
+let eval prog =
+  match eval_block prog Env.empty with
+  | Ret v -> v
+  | Env e -> Nil
+
