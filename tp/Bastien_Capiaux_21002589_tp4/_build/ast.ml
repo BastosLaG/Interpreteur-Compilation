@@ -18,7 +18,7 @@ type instr  =
   | Assign  of ident * expr
   | Cond    of expr * block * block
   | Loop    of expr * block
-and block   = instr list
+and block = instr list
 
 type def = 
   | Func of ident * ident list * block
