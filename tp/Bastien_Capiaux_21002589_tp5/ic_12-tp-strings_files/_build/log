@@ -1,0 +1,7 @@
+# dune build test.exe
+# OCAMLPARAM: unset
+# Workspace root:
+# /mnt/d/Documents/Programmation/2023-2024/Interpreteur-Compilation/tp/Bastien_Capiaux_21002589_tp5/ic_12-tp-strings_files
+$ /usr/bin/nproc > /tmp/dune47b050.output 2> /dev/null
+# Auto-detected concurrency: 16
+# disable binary cache
