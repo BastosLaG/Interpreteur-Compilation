@@ -1,11 +1,32 @@
 open Ast
 
+module MapString = Map.Make(String)
+
 let collect_constant_strings code =
   let counter = ref 0 in
+  let str_map = ref MapString.empty in
   let ccs_value = function
     | V1.Nil    -> V2.Nil, []
     | V1.Bool b -> V2.Bool b, []
     | V1.Int n  -> V2.Int n, []
+    (*| V1.Str s  ->
+                      incr counter;
+                      V2.Data ("str" ^ string_of_int !counter),
+                      ["str" ^ string_of_int !counter, s]*)
+    | V1.Str s  ->
+      let new_str, result =
+        if MapString.mem s !str_map then
+          let existing_value = MapString.find s !str_map in
+          let prefixed_string = "string" ^ string_of_int existing_value in
+          prefixed_string, []
+        else
+          let () = counter := !counter + 1 in
+          let counter_value = !counter in
+          let new_str = "string" ^ string_of_int counter_value in
+          str_map := MapString.add s counter_value !str_map;
+          new_str, [new_str, s]
+      in
+      V2.Data new_str, result
   in
   let rec ccs_expr = function
     | IR1.Value v ->
@@ -65,3 +86,5 @@ let collect_constant_strings code =
 
 let simplify code =
   collect_constant_strings code
+
+  

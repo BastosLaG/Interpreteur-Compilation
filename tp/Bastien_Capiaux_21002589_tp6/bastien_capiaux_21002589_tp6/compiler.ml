@@ -15,6 +15,7 @@ let compile_value v =
   | Nil    -> [ Li (V0, 0) ]
   | Bool b -> [ Li (V0, if b then 1 else 0) ]
   | Int n  -> [ Li (V0, n) ]
+  | Data d  -> [ La (V0, Lbl d) ]
 
 let rec compile_expr e env =
   match e with
