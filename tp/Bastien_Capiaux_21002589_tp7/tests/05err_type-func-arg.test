@@ -1,0 +1,1 @@
+int foo = 17 * true; # Error on line 1 col 15: expected int but given bool 

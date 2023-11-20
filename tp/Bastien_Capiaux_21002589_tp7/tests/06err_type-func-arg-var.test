@@ -1,0 +1,2 @@
+bool foo = false;
+int bar = 17 * foo; # Error on line 2 col 15: expected int but given bool 

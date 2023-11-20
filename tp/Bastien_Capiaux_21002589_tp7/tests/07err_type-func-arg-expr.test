@@ -1,0 +1,1 @@
+int bar = 17 * (3 < 2); # Error on line 1 col 18: expected int but given bool 
