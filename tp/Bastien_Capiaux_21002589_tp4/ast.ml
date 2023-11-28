@@ -1,23 +1,24 @@
-(* Ast *)
-type value = 
+(* ast.ml*)
+type value =
   | Void
   | Bool of bool
   | Int of int
   | Str of string
 
-type ident = string
-
-type expr = 
+type expr =
   | Value of value
-  | Var   of ident
-  | Call  of ident * expr list 
+  | Var of string
+  | Call of string * expr list
 
-type instr  = 
-  | Return  of expr
-  | Expr    of expr
+type instr =
+  | Assign of string * expr
+  | Return of expr
+  | Cond of expr * block * block
+  | Loop of expr * block
+  | Expr of expr 
 and block = instr list
 
-type def = 
-  | Func of ident * ident list * block
+type def =
+  | Func of string * string list * block
 
 type prog = def list
