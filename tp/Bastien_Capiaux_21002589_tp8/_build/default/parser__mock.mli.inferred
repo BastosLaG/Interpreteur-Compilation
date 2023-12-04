@@ -1,0 +1,16 @@
+type token =
+    Lvar of string
+  | Lsub
+  | Lsc
+  | Lreturn
+  | Lopar
+  | Lmul
+  | Lint of int
+  | Lend
+  | Ldiv
+  | Lcpar
+  | Lassign
+  | Ladd
+val menhir_begin_marker : int
+val xv_block : Ast.Syntax.block
+val menhir_end_marker : int

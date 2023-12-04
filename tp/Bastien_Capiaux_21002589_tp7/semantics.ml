@@ -46,10 +46,9 @@ let analyze_instr env instr =
       env, Decl d.name
   | Syntax.Assign a ->
       let ae = analyze_expr env a.expr in
-      if Env.mem a.var env then
-          env, Assign (a.var, ae)
-      else
-          raise (Error ("Unbound variable in assignment: " ^ a.var, a.pos))
+      if Env.mem a.var env 
+      then env, Assign (a.var, ae)
+      else raise (Error ("Unbound variable in assignment: " ^ a.var, a.pos))
 
 let rec analyze_block env block =
   match block with
@@ -62,83 +61,3 @@ let analyze parsed =
   let initial_env = Baselib._types_ in  
   let _, ir = analyze_block initial_env parsed in
   ir
-
-(* Ceci est ce que j'ai fait pour la 3, 4 ne fonctionne pas *)
-
-(*
-open Ast
-open Ast.IR
-open Baselib
-
-exception Error of string * Lexing.position
-
-(* fonctions d'aide à la gestion des erreurs *)
-
-let expr_pos expr =
-  match expr with
-  | Syntax.Value v -> v.pos
-  | Syntax.Var v   -> v.pos
-  | Syntax.Call c  -> c.pos
-
-let errt expected given pos =
-  raise (Error (Printf.sprintf "expected %s but given %s"
-                  (string_of_type_t expected)
-                  (string_of_type_t given),
-                pos))
-
-(* analyse sémantique *)
-
-let analyze_value value =
-  match value with
-  | Syntax.Bool b -> (Bool b, Bool_t)
-  | Syntax.Int n  -> (Int n, Int_t)
-
-let rec analyze_expr env expr =
-  match expr with
-  | Syntax.Value v ->
-    let v_expr, v_type = analyze_value v.value in
-    Value v_expr, v_type
-  | Syntax.Var v ->
-      if Env.mem v.name env then
-          Var v.name, Env.find v.name env
-      else
-          raise (Error ("Unbound variable: " ^ v.name, expr_pos expr))
-  | Syntax.Call c ->
-    let args, func_type = analyze_call env c in
-    Call (c.func, args), func_type
-  
-
-and analyze_call env call =
-  let args, arg_types = List.split (List.map (analyze_expr env) call.args) in
-  (Call (call.func, args), Func_t (call.func, arg_types))
-      
-
-let analyze_instr env instr =
-  match instr with
-  | Syntax.Decl d ->
-      let env = Env.add d.name d.type_t env in
-      env, Decl d.name
-  | Syntax.Assign a ->
-      let ae, expr_type = analyze_expr env a.expr in
-      if Env.mem a.var env then
-        match a.type_t, expr_type with
-        | Syntax.Int_t, Int_t | Syntax.Bool_t, Bool_t | Func_t _, Func_t _ ->
-            env, Assign (a.var, ae)
-        | _ ->
-            errt a.type_t expr_type a.pos
-      else
-        raise (Error ("Unbound variable in assignment: " ^ a.var, a.pos))
-
-let rec analyze_block env block =
-  match block with
-  | [] -> env, []
-  | instr :: rest ->
-      let env, ai = analyze_instr env instr in
-      let env, rest_ir = analyze_block env rest in
-      env, ai :: rest_ir
-
-let analyze parsed =
-  let initial_env = Baselib._types_ in  
-  let _, ir = analyze_block initial_env parsed in
-  ir
-*)

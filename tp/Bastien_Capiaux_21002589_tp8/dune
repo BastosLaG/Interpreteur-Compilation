@@ -1,0 +1,8 @@
+(ocamllex lexer)
+(menhir (modules parser))
+(executable
+  (name test)
+  (promote (until-clean)))
+(env
+  (dev
+    (flags (:standard -warn-error -A))))
