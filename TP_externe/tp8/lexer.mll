@@ -13,6 +13,15 @@ rule token = parse
 | [ ' ' '\t' ]    { token lexbuf }
 | '\n'            { Lexing.new_line lexbuf; token lexbuf }
 | '#'             { comment lexbuf }
+| '*'		  { Lmul }
+| '+'		  { Ladd }
+| '-'		  { Lsub }
+| '/'	 	  { Ldiv }
+| ';' 		  { Lsc }
+| '='		  { Lassign }
+| "return"	  { Lreturn }
+| num+ as n	  { Lint (int_of_string n) }
+| alpha+ as v	  { Lvar v }
 | _ as c          { raise (Error c) }
 
 and comment = parse
