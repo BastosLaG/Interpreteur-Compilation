@@ -31,7 +31,6 @@ add_user_num:
   syscall
 
   jr $ra
-  
 main:
   li $t2, 3
 loop:
