@@ -6,7 +6,9 @@
 %token <int> Lint
 %token <bool> Ltrue
 %token <bool> Lfalse
-%token Lend
+// %token <string> Lident
+%token <string> Lstring
+%token Lend 
 
 %start prog
 
@@ -27,5 +29,8 @@ expr:
 }
 | b = Lfalse {
   Bool { value = b ; pos = $startpos(b) }
+}
+| s = Lstring {
+  String { name = s ; pos = $startpos(s) }
 }
 ;

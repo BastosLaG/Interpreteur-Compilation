@@ -7,7 +7,7 @@
 
 let num = ['0'-'9']
 let alpha = ['a' - 'z' 'A' - 'Z']
-let ident = alpha ( alpha | num | '_')
+let ident = alpha ( alpha | num | '_' )
 
 rule token = parse
 | eof             { Lend }
@@ -16,4 +16,6 @@ rule token = parse
 | num+ as n       { Lint (int_of_string n) }
 | "True"          { Ltrue (true)}
 | "False"         { Lfalse (false)}
+| '"' [^'"']* '"' { Lstring (Lexing.lexeme lexbuf) }
+(* | ident+ as id      { Lident (id)} *)
 | _ as c          { raise (Error c) }
