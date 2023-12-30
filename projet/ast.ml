@@ -19,7 +19,7 @@ module IR = struct
     | Int     of int
     | Bool    of bool
     | String  of string
-    | Var     of string
+    (* | Var     of string *)
 
   
 end
