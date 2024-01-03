@@ -1,0 +1,4 @@
+string test = "Hello world !";
+int x = 15326; 
+bool t = True; 
+bool f = False;
