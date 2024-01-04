@@ -9,7 +9,7 @@ let _types_ = Env.of_seq(
     ("%sub", Func_t(Int_t,[Int_t;Int_t]));
     ("%mul", Func_t(Int_t,[Int_t;Int_t]));
     ("%div", Func_t(Int_t,[Int_t;Int_t]));
-    ("%eq", Func_t(Bool_t,[Int_t;Int_t]));
+    ("%eq" , Func_t(Bool_t,[Int_t;Int_t]));
     ("%neq", Func_t(Bool_t,[Int_t;Int_t]));
   ]
 )
@@ -17,25 +17,13 @@ let _types_ = Env.of_seq(
 
 let builtins =
   [
-    Label "printi"
-    ; Lw (A0, Mem (SP, 0))
-    ; Li (V0, Syscall.print_int)
-    ; Syscall
-    ; Jr RA
-
-    ; Label "scani"
-    ; Lw (A0, Mem (SP, 0))
-    ; Li (V0, Syscall.read_int)
-    ; Syscall
-    ; Jr RA
-
-    ; Label "printf"
+    Label "_printf"
     ; Lw (A0, Mem (SP, 0))
     ; Li (V0, Syscall.print_str)
     ; Syscall
     ; Jr RA
 
-    ; Label "scanf"
+    ; Label "_scanf"
     ; Lw (A0, Mem (SP, 0))
     ; Li (V0, Syscall.read_str)
     ; Syscall
@@ -85,6 +73,9 @@ let builtins =
  
     ; Label "notequal"
     ; Li (V0, 1)
-    ; Jr RA
+    ; Jr RA 
+    
+    ; Label "prog"
+
   ]
 

@@ -1,0 +1,4 @@
+int x = 1+2;
+int y = 2-1;
+int z = x * y;
+return z;

@@ -17,12 +17,11 @@ module Syntax = struct
 
 
   type instr=
-    | Decl   of {var: string; pos: Lexing.position }
-    | Assign of {var: string; expr: expr; pos: Lexing.position}
-    | Return of {expr : expr; pos: Lexing.position}
-    | Print  of {args : expr list; pos : Lexing.position}
-    | Cond   of {cond : expr; then_block : block; else_block: block; pos : Lexing.position}
-    | Loop   of {cond : expr; block: block; pos : Lexing.position}
+    | Decl   of { var: string; pos: Lexing.position }
+    | Assign of { var: string; expr: expr; pos: Lexing.position}
+    | Return of { expr : expr; pos: Lexing.position}
+    | Cond   of { cond : expr; then_block : block; else_block: block; pos : Lexing.position}
+    | Loop   of { cond : expr; block: block; pos : Lexing.position}
 
   and block = instr list
 end
@@ -40,7 +39,6 @@ module IR = struct
   | Decl   of string
   | Assign of string * expr
   | Return of expr
-  | Print  of expr list
   | Cond   of expr * block * block
   | Loop   of expr * block
 

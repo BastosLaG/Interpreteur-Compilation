@@ -23,10 +23,6 @@ let rec analyze_instr instr env =
         let re = analyze_expr env r.expr in
         (Return re, env)
 
-  | Syntax.Print { args = print_args; pos = _ } ->
-        let analyzed_args = List.map (analyze_expr env) print_args in
-        (Print analyzed_args, env)
-
   | Syntax.Cond c ->
         let cif = analyze_expr env c.cond in
         let cthen = List.map (fun i -> fst (analyze_instr i env)) c.then_block in

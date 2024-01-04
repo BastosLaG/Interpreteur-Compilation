@@ -2,7 +2,7 @@
 .globl main
 main:
   move $fp, $sp
-  addi $fp, $sp, -8
+  addi $fp, $sp, -16
 printi:
   lw $a0, 0($sp)
   li $v0, 1
@@ -62,8 +62,14 @@ notequal:
   li $v0, 1
   jr $ra
 prog:
-  li $v0, 1312
+  la $a0, str1
   sw $v0, 0($fp)
+  li $v0, 15326
+  sw $v0, -4($fp)
+  li $v0, 0
+  sw $v0, -8($fp)
+  li $v0, 1
+  sw $v0, -12($fp)
 
   move $a0, $v0
   li $v0, 1
@@ -71,3 +77,4 @@ prog:
   jr $ra
 
 .data
+str1: .asciiz "Hello world !"

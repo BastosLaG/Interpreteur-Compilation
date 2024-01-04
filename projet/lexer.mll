@@ -12,15 +12,15 @@ let ident = alpha (alpha | num | '-' | '_')*
 rule token = parse
 | eof             { Lend }
 | ";"			        { Lsc }
-| ","             { Lvirgule }
+(* | ","             { Lvirgule } *)
 | [ ' ' '\t' ]    { token lexbuf }
 | '\n'            { Lexing.new_line lexbuf; token lexbuf }
 | "//"          	{ comment lexbuf }
 
 (* base *)
-| num+ as n       { Lint (int_of_string n) }
-| "True"          { Lbool (true)}
-| "False"         { Lbool (false)}
+| num+ as n       { Lint    (int_of_string n) }
+| "True"          { Ltrue   (true)}
+| "False"         { Lfalse  (false)}
 | '"' [^'"']* '"' { Lstring (Lexing.lexeme lexbuf) }
 
 
@@ -28,8 +28,8 @@ rule token = parse
 | ident+ as id    { Lvar (id) }
 | "="			        { Lassign }
 | "return"        { Lreturn }
-| "print"		      { Lprint }
-(* | "scan"          { Lscan } *)
+| "printf"		    { Lprint }
+| "scan"          { Lscan }
 
 (* operateur *)
 | "+"			        { Ladd }

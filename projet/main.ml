@@ -1,4 +1,4 @@
-(* ocamlbuild -use-menhir main.byte *)
+(* ocamlbuild -use-menhir test.byte *)
 
 open Lexing
 open Ast
@@ -9,8 +9,7 @@ let err msg pos =
   exit 1
 
 let () =
-  if (Array.length Sys.argv) != 2 then 
-    begin
+  if (Array.length Sys.argv) != 2 then begin
       Printf.eprintf "Usage: %s <file>\n" Sys.argv.(0) ;
       exit 1
     end;

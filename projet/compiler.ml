@@ -18,29 +18,28 @@ let new_label =
 
 let rec compile_expr e env info =
   match e with
-  | Void          -> ([], info)
   | Int n         -> ([Li (V0, n)], info)
-  | Bool b        -> ([Li (V0, if b then 1 else 0)], info)
+  | Bool b        -> ([Li (V0, if b then 0 else 1)], info)
   | String s      ->
     let label = new_label () in
     let formattedString =
       if String.length s > 2 && s.[0] = '\"' && s.[String.length s - 1] = '\"' then
         String.sub s 1 (String.length s - 2)
       else
-        s
-    in
-    let new_info = { info with data_decls = info.data_decls @ [(label, Mips.Asciiz formattedString)] } in
-    ([La (A0, Lbl label)], new_info)
+        s in
+          let new_info = { info with data_decls = info.data_decls @ 
+                         [(label, Mips.Asciiz formattedString)] } in
+                         ([La (A0, Lbl label)], new_info)
 
   | Call (f, args) ->
-      let new_asm, new_info =
-        List.fold_right
-          (fun a (acc_asm, acc_info) ->
-            let instrs, info = compile_expr a env acc_info in
-            (instrs @ [Addi (SP, SP, -4); Sw (V0, Mem (SP, 0))] @ acc_asm, info))
-          args ([], info)
-      in
-      (new_asm @ [Jal f; Addi (SP, SP, 4 * List.length args)], new_info)
+    let new_asm, new_info =
+    List.fold_right
+    (fun a (acc_asm, acc_info) ->
+      let instrs, info = compile_expr a env acc_info in
+        (instrs @ [Addi (SP, SP, -4); Sw (V0, Mem (SP, 0))] @ acc_asm, info))
+        args ([], info) in
+          (new_asm @ [Jal f; Addi (SP, SP, 4 * List.length args)], new_info)
+  | Void          -> ([], info)
 
 let rec compile_instr instr info =
   match instr with
@@ -58,17 +57,6 @@ let rec compile_instr instr info =
   | Return e      ->
         let compiled_expr, new_info = compile_expr e info.env info in
         { new_info with asm = new_info.asm @ compiled_expr @ [Move (SP, FP); Lw (FP, Mem (SP, 0)); Addi (SP, SP, 4); Jr RA] }
-  | Print p       ->
-          let new_info, compiled_prints = List.fold_right (fun e (acc_info, acc_asm) ->
-          let compiled_expr, new_info = compile_expr e acc_info.env acc_info in
-          (new_info, acc_asm @ compiled_expr @ match e with
-            | Int n -> [Li (A0, n); Li (V0, Syscall.print_int); Syscall]
-            | String _ -> [Li (V0, Syscall.print_str); Syscall]
-            | _ -> []) 
-        ) p (info, [])
-        in
-          { new_info with asm = info.asm @ compiled_prints }
-
   | Cond (cond,then_block,else_block) ->
         let else_label = new_label() in
         let end_label = new_label()  in
