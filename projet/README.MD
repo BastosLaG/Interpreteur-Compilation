@@ -48,9 +48,16 @@ Expliquez comment installer votre projet, y compris toutes les dépendances néc
 
 ```bash
 # Instruction de construction du projet
+make 
+# ou
 ocamlbuild -use-menhir main.byte
+
 # Instruction de nettoyage
+make clean 
+# ou
 dune clean && rm main.byte
+
 # Instruction de test 
-./main.byte tests/[fichier].test > results/[fichier].s
+make test
+
 ```
