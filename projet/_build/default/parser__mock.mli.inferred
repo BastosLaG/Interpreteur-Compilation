@@ -1,5 +1,0 @@
-type token = Lint of int | Lend
-val menhir_begin_marker : int
-val xv_prog : Ast.Syntax.expr
-val xv_expr : Ast.Syntax.expr
-val menhir_end_marker : int
