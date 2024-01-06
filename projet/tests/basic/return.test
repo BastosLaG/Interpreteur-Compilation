@@ -1,0 +1,7 @@
+int main() {
+    int x;
+    return 5; 
+    return "hello"; 
+    return True;
+    return True;
+}

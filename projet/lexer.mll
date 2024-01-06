@@ -1,56 +1,71 @@
+(* lexer.mll *)
 {
+  open Errors
   open Lexing
   open Parser
-
-  exception Error of char
 }
 
-let num = ['0'-'9']
 let alpha = ['a'-'z' 'A'-'Z']
+let num   = ['0'-'9']
+let bool  = "true" | "false"
 let ident = alpha (alpha | num | '-' | '_')*
 
 rule token = parse
-| eof             { Lend }
-| ";"			        { Lsc }
-(* | ","             { Lvirgule } *)
-| [ ' ' '\t' ]    { token lexbuf }
-| '\n'            { Lexing.new_line lexbuf; token lexbuf }
-| "//"          	{ comment lexbuf }
+  | eof           { Lend }
+  | [ ' ' '\t' ]  { token lexbuf }
+  | '\n'          { Lexing.new_line lexbuf; token lexbuf }
+  | "//"          	{ comment lexbuf }
 
-(* base *)
-| num+ as n       { Lint    (int_of_string n) }
-| "True"          { Ltrue   (true)}
-| "False"         { Lfalse  (false)}
-| '"' [^'"']* '"' { Lstring (Lexing.lexeme lexbuf) }
+  | num+ as n     { Lint (int_of_string n) }
+  | bool as b     { Lbool (bool_of_string b) }
+  | "return"      { Lreturn }
+  | "int"         { Ltype (Int_t) }
+  | "bool"        { Ltype (Bool_t) }
+  | "void"        { Ltype (Void_t) }
+  | "string"      { Ltype (Str_t) }
+  
+  (* condition *)
+  | "if"          { Lif }
+  | "else"        { Lelse }
+  | "while"       { Lwhile }
+  | "printf"      { Lprintf }
+  | "scanf"       { Lscanf }
 
-
-(* var *)
-| ident+ as id    { Lvar (id) }
-| "="			        { Lassign }
-| "return"        { Lreturn }
-| "printf"		    { Lprint }
-| "scan"          { Lscan }
-
-(* operateur *)
-| "+"			        { Ladd }
-| "-"             { Lsub }
-| "*"			        { Lmul }
-| "/"             { Ldiv }
-| "=="			      {	Lequal }
-| "!="		  	    { Lnequal }
-
-(* condition *)
-| "if"			      { Lif }
-| "else"		      { Lelse }
-| "while"		      { Lwhile }
-| "("			        { LopenP }
-| ")"			        { LcloseP }
-| "{" 			      { LopenC }
-| "}"			        { LcloseC }
-
-| _ as c          { raise (Error c) }
+  | '{'           { LopenAcc }
+  | '}'           { LcloseAcc }
+  | '('           { LopenP }
+  | ')'           { LcloseP }
+  | ','           { Lvirgule }
+  
+  (* operateur *)
+  | '='           { Lassign }
+  | ';'           { Lsc }
+  | '+'           { Ladd }
+  | '-'           { Lsub }
+  | '*'           { Lmul }
+  | '/'           { Ldiv }
+  | '%'           { Lrem }
+  | "=="          { Lseq }
+  | ">="          { Lsge }
+  | ">"           { Lsgt }
+  | "<="          { Lsle }
+  | "<"           { Lslt }
+  | "!="          { Lsne }
+  | "&&"          { Land }
+  | "||"          { Lor }
+  | '"'           { read_string (Buffer.create 16) lexbuf }
+  | ident as i    { Lvar i }
+  | '#'           { comment lexbuf }
+  | _ as c        { raise (LexerErrorC c) }
 
 and comment = parse
-| eof  { Lend }
-| '\n' { Lexing.new_line lexbuf; token lexbuf }
-| _    { comment lexbuf }
+  | eof   { Lend }
+  | '\n'  { Lexing.new_line lexbuf; token lexbuf }
+  | _     { comment lexbuf }
+
+and read_string buffer = parse
+  | '"'           { Lstr (Buffer.contents buffer) }
+  | '\\' 'n'      { Buffer.add_string buffer "\\n"; read_string buffer lexbuf }
+  | [^ '"' '\\']+ { Buffer.add_string buffer (Lexing.lexeme lexbuf); read_string buffer lexbuf}
+  | _ as c        { raise (LexerErrorC c) }
+  | eof           { raise (LexerErrorS "String error") }

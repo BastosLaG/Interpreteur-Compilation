@@ -1,1 +1,4 @@
-printf("5");
+int main() {
+    printf("5");
+    return 0;
+}

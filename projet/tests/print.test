@@ -1,0 +1,34 @@
+// Petit programme de démonstration sans boucle 
+int main() {
+    int a = 5;
+    int b = 10;
+
+    int inverse_a = -5;
+
+    bool test = (a != inverse_a);
+
+    int somme = a + b;
+
+    printf("La valeur de a est : ");
+    printf(a);
+    printf("\n");
+    
+    printf("L'inverse de a est : ");
+    printf(inverse_a);
+    printf("\n");
+    
+    printf("a est différent de son inverse ? : ");
+    printf(test);
+    printf("\n");
+
+    printf("La valeur de b est : ");
+    printf(b);
+    printf("\n");
+
+    printf("La somme de a et b est : ");
+    printf(somme);
+    printf("\n");
+
+    
+    return 0;
+}

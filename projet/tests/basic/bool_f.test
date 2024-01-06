@@ -1,1 +1,4 @@
-bool f = False;
+int main() {
+    bool f = false;
+    return 0;
+}

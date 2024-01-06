@@ -1,1 +1,4 @@
-int x = 1312; return x;
+int main() {
+    int x = 1312; 
+    return x+2;
+}

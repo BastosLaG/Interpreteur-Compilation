@@ -1,1 +1,7 @@
-string test = "Hello world !"; int x = 15326; bool t = True; bool f = False;
+int main() {
+    string test = "Hello world !";
+    int x = 15326; 
+    bool t = true; 
+    bool f = false;
+    return 0;
+}

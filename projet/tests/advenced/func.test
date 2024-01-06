@@ -1,0 +1,13 @@
+int func(int x, int y) {
+  int z;
+  z = x * y;
+  return z;
+}
+
+int main() {
+  int x = func(1, 2);
+  printf("x = ");
+  printf(x);
+  printf("\n");
+  return 0;
+}

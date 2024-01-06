@@ -1,0 +1,27 @@
+abc
+
+int main() {
+    int a = 5;
+    int b = 10;
+    bool estPair = (b % 2 == 0);
+
+    int somme = a + b;
+
+    printf("La valeur de a est : ");
+    printf(a);
+    printf("\n");
+
+    printf("La valeur de b est : ");
+    printf(b);
+    printf("\n");
+
+    printf("La somme de a et b est : ");
+    printf(somme);
+    printf("\n");
+
+    printf("b est pair ? : ");
+    printf(true);
+    printf("\n");
+    
+    return 0;
+}

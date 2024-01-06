@@ -1,108 +1,138 @@
+(*parser.mly*)
 %{
   open Ast
   open Ast.Syntax
 %}
 
-%token Lsc 
-%token Lend 
-// %token Lvirgule
-// base
+
 %token <int> Lint
-%token <bool> Ltrue
-%token <bool> Lfalse
-%token <string> Lstring
+%token <bool> Lbool
+%token <string> Lstr
+%token <Ast.type_t> Ltype
 %token <string> Lvar
-
-// var
-%token Lassign
-%token Lreturn 
-%token Lprint
-%token Lscan
-
+%token Lend Lassign Lsc Lreturn
+// Accolade 
+%token LopenAcc LcloseAcc
+// parentheses
+%token LopenP LcloseP
 // operateur
-%token Ladd 
-%token Lsub 
-%token Lmul 
-%token Ldiv 
-%token Lequal 
-%token Lnequal
+%token Ladd Lsub Lmul Ldiv Lrem Lseq Lsge Lsgt Lsle Lslt Lsne
+%token Land Lor
+// Condition
+%token Lif Lelse Lwhile
+%token Lprintf Lscanf
+%token Lvirgule
 
-// condition
-%token Lif
-%token Lelse
-%token Lwhile
-%token LopenP
-%token LcloseP
-%token LopenC 
-%token LcloseC
-
+%left Ladd Lsub Lseq Lsge Lsgt Lsle Lslt Lsne
+%left Lmul Ldiv Lrem
+%left Land Lor
 
 %start prog
 
-%type <Ast.Syntax.block> prog
+%type <Ast.Syntax.prog> prog
 
 %%
-block:
-| Lend { [] }
-| i = instr; b = block { i @ b }
-| i = instr; Lsc { i }
-;
-
 prog:
-|i = instr; Lsc; b =  prog{i@b}
-|i = instr; Lsc; Lend {i}
+  | f = def ; b = prog { f @ b }
+  | Lend { [] }
+
+def:
+  | t = Ltype; f = Lvar; LopenP; a = separated_list(Lvirgule, arg); LcloseP; b = block 
+    { [ Func { func = f ; type_t = t ; args = a ; code = b ; pos = $startpos(f) } ] }
+
+arg:
+  | t = Ltype ; v = Lvar { Arg { type_t = t ; name = v } }
+
+block:
+  | LopenAcc ; b = block { b }
+  | i = instr ; b = block { i @ b }
+  | LcloseAcc { [] }
 ;
 
 instr:
-| Lvar; id = Lvar 
-  { [ Decl { var = id; pos = $startpos(id) }] }
-| Lvar; id = Lvar; Lassign; e = expr 
-  { [ Decl { var = id; pos = $startpos(id) }
-    ; Assign { var = id; expr = e; pos = $startpos($3) }] }
-| id = Lvar; Lassign; e = expr 
-  { [ Assign { var = id; expr = e; pos = $startpos($2) }] }
-| Lreturn; e = expr 
-  { [Return { expr = e;pos = $startpos($1)}] }
-| Lif; LopenP ; c = expr; LcloseP ; LopenC ; t= block ; LcloseC ; Lelse ; LopenC; e = block ; LcloseC 
-  {	[Cond { cond = c; then_block = t; else_block = e; pos= $startpos(c) }] }
-| Lif; LopenP ; e = expr ; LcloseP ; LopenC ; b = block; LcloseC 
-  { [Cond { cond = e; then_block = b; else_block = []; pos = $startpos }] }
-| Lwhile; LopenP ; l = expr ; LcloseP ; LopenC; b = block ; LcloseC
-  { [Loop { cond = l; block = b; pos = $startpos(l)}] }
+| Lreturn ; e = expr ; Lsc { [ Return { expr = e ; pos = $startpos } ] }
+
+| Lreturn ; Lsc {
+  [ Return { expr = Val { value = Void ; pos = $startpos($2) }
+            ; pos = $startpos } ]
+  }
+| Lprintf; LopenP; e = expr; LcloseP ; Lsc { 
+  [ Printf { expr = e; pos = $startpos(e) } ]
+  }
+| Lscanf; LopenP; e = expr; LcloseP ; Lsc { 
+  [ Scanf { expr = e; pos = $startpos(e) } ]
+  }
+| t = Ltype ; v = Lvar ; Lsc {
+  [ Decl { name = v ; type_t = t ; pos = $startpos } ]
+}
+| t = Ltype ; v = Lvar ; Lassign ; e = expr ; Lsc
+  { [ Decl { name = v ; type_t = t ; pos = $startpos(v) }
+  ; Assign { var = v ; expr = e ; pos = $startpos($3) } ]
+  }
+| v = Lvar ; Lassign ; e = expr ; Lsc {
+  [ Assign { var = v ; expr = e ; pos = $startpos($2) } ]
+}
+| Lif ; LopenP ; e = expr ; LcloseP ; b1 = block ; Lelse ; b2 = block {
+  [ Cond { expr = e ; if_b = b1 ; else_b = b2 ; pos = $startpos } ]
+}
+| Lif ; LopenP ; e = expr ; LcloseP ; b = block {
+  [ Cond { expr = e ; if_b = b ; else_b = [] ; pos = $startpos } ]
+}
+| Lwhile ; LopenP ; e = expr ; LcloseP ; b = block {
+  [ Loop { expr = e ; block = b ; pos = $startpos } ]
+}
+;
+
 
 expr:
-| n = Lint    { Int { value = n; pos = $startpos(n) } }
-| s = Lstring { String { value = s; pos = $startpos(s) } }
-| b = Ltrue   { Bool { value = b; pos = $startpos(b) } }
-| b = Lfalse  { Bool { value = b; pos = $startpos(b) } }
-| id = Lvar   {	String { value = id;pos = $startpos(id)} }
+| Lsub ; n = Lint { Val { value = Int (-n) ; pos = $startpos($1) } }
+| Lint            { Val { value = Int ($1) ; pos = $startpos($1) } }
+| Lbool           { Val { value = Bool ($1) ; pos = $startpos($1) } }
+| Lstr            { Val { value = Str ($1) ; pos = $startpos($1) } }
+| Lvar            { Var { name = $1 ; pos = $startpos($1) } }
+| LopenP; e = expr; LcloseP { e }
 
-| Lprint; LopenP; s = Lint; LcloseP 
-  { Call {func = "_printf"; args = [Int { value = s; pos = $startpos(s) }]; pos = $startpos(s) } }
-| Lprint; LopenP; s = Lstring; LcloseP 
-  { Call {func = "_printf"; args = [String { value = s; pos = $startpos(s) }]; pos = $startpos(s) } }
-| Lprint; LopenP; b = Ltrue; LcloseP 
-  { Call {func = "_printf"; args = [Bool { value = b; pos = $startpos(b) }]; pos = $startpos(b) } }
-| Lprint; LopenP; b = Lfalse; LcloseP 
-  { Call {func = "_printf"; args = [Bool { value = b; pos = $startpos(b) }]; pos = $startpos(b) } }
-| Lprint; LopenP; v = Lvar; LcloseP 
-  { Call {func = "_printf"; args = [String { value = v; pos = $startpos(v) }]; pos = $startpos(v) } }
 
-| LopenP; e = expr; LcloseP 
-  { e }
-
-| Lscan; LopenP; s = expr; LcloseP 
-  { Call {func = "_scanf"; args = [s]; pos = $startpos(s) } }
-| e = expr; Ladd; d = expr 
-  { Call { func = "_add"; args = [e; d]; pos = $startpos($2) } }
-| e = expr; Lsub; d = expr 
-  { Call { func = "_sub"; args = [e; d]; pos = $startpos($2) } }
-| e = expr; Lmul; d = expr 
-  { Call { func = "_mul"; args = [e; d]; pos = $startpos($2) } }
-| e = expr; Ldiv; d = expr 
-  { Call { func = "_div"; args = [e; d]; pos = $startpos($2) } }
-| e = expr; Lequal; d = expr 
-  { Call { func = "_eq"; args = [e;d]; pos = $startpos($2) } }
-| e = expr; Lnequal; d = expr 
-  { Call { func = "_neq"; args = [e;d]; pos = $startpos($2)} }
+| a = expr ; Ladd ; b = expr {
+  Call { func = "%add" ; args = [ a ; b ] ; pos = $startpos($2) }
+}
+| a = expr ; Lsub ; b = expr {
+  Call { func = "%sub" ; args = [ a ; b ] ; pos = $startpos($2) }
+}
+| a = expr ; Lmul ; b = expr {
+  Call { func = "%mul" ; args = [ a ; b ] ; pos = $startpos($2) }
+}
+| a = expr ; Ldiv ; b = expr {
+  Call { func = "%div" ; args = [ a ; b ] ; pos = $startpos($2) }
+}
+| a = expr ; Lrem ; b = expr {
+  Call { func = "%rem" ; args = [ a ; b ] ; pos = $startpos($2) }
+}
+| a = expr ; Lseq ; b = expr {
+  Call { func = "%seq" ; args = [ a ; b ] ; pos = $startpos($2) }
+}
+| a = expr ; Lsge ; b = expr {
+  Call { func = "%sge" ; args = [ a ; b ] ; pos = $startpos($2) }
+}
+| a = expr ; Lsgt ; b = expr {
+  Call { func = "%sgt" ; args = [ a ; b ] ; pos = $startpos($2) }
+}
+| a = expr ; Lsle ; b = expr {
+  Call { func = "%sle" ; args = [ a ; b ] ; pos = $startpos($2) }
+}
+| a = expr ; Lslt ; b = expr {
+  Call { func = "%slt" ; args = [ a ; b ] ; pos = $startpos($2) }
+}
+| a = expr ; Lsne ; b = expr {
+  Call { func = "%sne" ; args = [ a ; b ] ; pos = $startpos($2) }
+}
+| a = expr ; Land ; b = expr {
+  Call { func = "%and" ; args = [ a ; b ] ; pos = $startpos($2) }
+}
+| a = expr ; Lor ; b = expr {
+  Call { func = "%or" ; args = [ a ; b ] ; pos = $startpos($2) }
+}
+| f = Lvar ; LopenP ; a = separated_list(Lvirgule, expr) ; LcloseP {
+  Call { func = f ; args = a ; pos = $startpos }
+}
 ;

@@ -1,1 +1,5 @@
-string test = "Hello world!"; 
+int main() {
+    string test = "Hello world!";
+    printf(test);
+    return 0;
+}

@@ -1,0 +1,19 @@
+// Petit programme de démonstration avec boucle 
+int main() {
+    
+    int conditionStop = 100;
+
+    while (conditionStop > 0) {
+        printf("Je déteste la compilation");
+        conditionStop = conditionStop - 1;
+    }
+
+    if (conditionStop == -1) {
+        printf("Je déteste vraiment la compilation");
+    }
+    else {
+        printf("c'est pas si mal enfaite");
+    }
+    
+    return 0;
+}
