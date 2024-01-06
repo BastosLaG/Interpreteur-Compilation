@@ -51,4 +51,6 @@ Expliquez comment installer votre projet, y compris toutes les dépendances néc
 ocamlbuild -use-menhir main.byte
 # Instruction de nettoyage
 dune clean && rm main.byte
+# Instruction de test 
+./main.byte tests/[fichier].test > results/[fichier].s
 ```
